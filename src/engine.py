@@ -1,5 +1,4 @@
 from src.settings import *
-from pathlib import Path
 
 
 def imgload(*path, columns=1, rows=1, scale=R):

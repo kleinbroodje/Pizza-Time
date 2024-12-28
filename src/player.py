@@ -1,5 +1,7 @@
 from src.engine import *
 from src.vehicles import *
+from src.pizza import *
+
 
 class Player:
     def __init__(self):
@@ -14,6 +16,9 @@ class Player:
         self.current_frame = 0
         self.vehicle = vehicles["bike"]
         self.driving = False
+        self.mountable = False
+        self.pizzas = [Pizza()]
+        self.pizza = None
 
     def keys(self):
         keys = pygame.key.get_pressed()
@@ -38,14 +43,30 @@ class Player:
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_e:
-                if not self.driving and math.sqrt((self.rect.centerx - self.vehicle.rect.centerx)**2 + (self.rect.centery - self.vehicle.rect.centery)**2) < 20*R:
+            if event.key == pygame.K_q:
+                if self.mountable:
                     self.driving = True
                 else:
                     self.driving = False
+            if event.key == pygame.K_e and self.mountable:
+                if not self.pizza:
+                    self.pizza = self.pizzas[0]
+                else:
+                    self.pizzas.append(self.pizza)
+                    self.pizza = None
 
     def update(self):
         self.vehicle.update()
+
+        if not self.driving and math.sqrt((self.rect.centerx - self.vehicle.rect.centerx)**2 + (self.rect.centery - self.vehicle.rect.centery)**2) < 20*R:
+            self.mountable = True
+            text1 = pygame.Font.render(fonts[30], "Press <Q> to drive", True, (255, 255, 255))
+            text2 = pygame.Font.render(fonts[30], "Press <E> to grab pizza", True, (255, 255, 255))
+            display.blit(text1, (WIDTH/2 - text1.width/2, HEIGHT*2/3))
+            display.blit(text2, (WIDTH/2 - text2.width/2, HEIGHT*3/4))
+        else:
+            self.mountable = False
+
         self.keys()
 
         self.rect.x += self.vel_x
@@ -66,11 +87,13 @@ class Player:
                 self.current_frame = 0
             legs = self.legs[int(self.current_frame)]
             self.current_frame += 0.25
-    
-        surf = pygame.Surface((21*R, 29*R))
+
+        surf = pygame.Surface((21*R, 31*R))
         surf.set_colorkey((0, 0, 0))
         surf.blit(legs, (0, 0))
         surf.blit(self.body, (0, 0))
+        if self.pizza:
+            surf.blit(self.pizza.image, (4*R, 18*R))
         surf.blit(self.head, (0, 0))
 
         surf_copy = pygame.transform.rotate(surf, angle)
