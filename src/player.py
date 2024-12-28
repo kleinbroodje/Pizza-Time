@@ -44,7 +44,7 @@ class Player:
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
-                if self.mountable:
+                if self.mountable and not self.pizza:
                     self.driving = True
                 else:
                     self.driving = False
@@ -60,10 +60,14 @@ class Player:
 
         if not self.driving and math.sqrt((self.rect.centerx - self.vehicle.rect.centerx)**2 + (self.rect.centery - self.vehicle.rect.centery)**2) < 20*R:
             self.mountable = True
-            text1 = pygame.Font.render(fonts[30], "Press <Q> to drive", True, (255, 255, 255))
-            text2 = pygame.Font.render(fonts[30], "Press <E> to grab pizza", True, (255, 255, 255))
-            display.blit(text1, (WIDTH/2 - text1.width/2, HEIGHT*2/3))
-            display.blit(text2, (WIDTH/2 - text2.width/2, HEIGHT*3/4))
+            if not self.pizza:
+                text1 = pygame.Font.render(fonts[30], "Press <Q> to drive", True, (255, 255, 255))
+                display.blit(text1, (WIDTH/2 - text1.width/2, HEIGHT*2/3))
+                text2 = pygame.Font.render(fonts[30], "Press <E> to grab pizza", True, (255, 255, 255))
+                display.blit(text2, (WIDTH/2 - text2.width/2, HEIGHT*3/4))
+            else:
+                text2 = pygame.Font.render(fonts[30], "Press <E> to put back pizza", True, (255, 255, 255))
+                display.blit(text2, (WIDTH/2 - text2.width/2, HEIGHT*3/4))
         else:
             self.mountable = False
 
