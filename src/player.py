@@ -1,7 +1,7 @@
 from src.engine import *
 from src.vehicles import *
 from src.pizza import *
-
+from src.map import *
 
 class Player:
     def __init__(self):
@@ -74,7 +74,27 @@ class Player:
         self.keys()
 
         self.rect.x += self.vel_x
+
+        for o in houses:
+            if self.rect.colliderect(o.rect): 
+                if self.vel_x > 0:
+                    self.rect.right = o.rect.left
+                if self.vel_x < 0:
+                    self.rect.left = o.rect.right
+
         self.rect.y += self.vel_y
+
+        for o in houses:
+            if self.rect.colliderect(o.rect): 
+                if self.vel_y > 0:
+                    self.rect.bottom = o.rect.top
+                if self.vel_y < 0:
+                    self.rect.top = o.rect.bottom
+
+        for house in houses:
+            if self.rect.colliderect(house.door_rect) and self.pizza:
+                text2 = pygame.Font.render(fonts[30], "Press <E> to deliver pizza", True, (255, 255, 255))
+                display.blit(text2, (WIDTH/2 - text2.width/2, HEIGHT*3/4))
 
         if self.driving:
             self.running = False
@@ -83,7 +103,7 @@ class Player:
             self.rect.centerx = self.vehicle.rect.centerx - R * 4 * math.sin(math.radians(angle))
             self.rect.centery = self.vehicle.rect.centery - R * 4 * math.cos(math.radians(angle))
         else:
-            angle = math.degrees(math.atan2(self.rect.centery - pygame.mouse.get_pos()[1], self.rect.centerx - pygame.mouse.get_pos()[0])) * -1 - 90
+            angle = math.degrees(math.atan2(self.rect.centery - (pygame.mouse.get_pos()[1]+scroll[1]), self.rect.centerx - (pygame.mouse.get_pos()[0]+scroll[0]))) * -1 - 90
 
         legs = self.legs[0]
         if self.running:
@@ -102,7 +122,7 @@ class Player:
 
         surf_copy = pygame.transform.rotate(surf, angle)
 
-        display.blit(surf_copy, (self.rect.centerx - int(surf_copy.width/2), self.rect.centery - int(surf_copy.height/2)))
+        display.blit(surf_copy, (self.rect.centerx - int(surf_copy.width/2) - scroll[0], self.rect.centery - int(surf_copy.height/2) - scroll[1]))
 
 
 player = Player()
