@@ -23,7 +23,11 @@ go_sound = pygame.mixer.Sound(Path("assets", "sfx", "go.wav"))
 countdown_sound = pygame.mixer.Sound(Path("assets", "sfx", "count.wav"))
 stop_sound = pygame.mixer.Sound(Path("assets", "sfx", "stop.wav"))
 
+voicelines = [pygame.mixer.Sound(Path("assets", "sfx", f"voiceline{i}.wav")) for i in range(1, 9)]
+
 class States(Enum):
     LAUNCH = 0  
     MAIN_MENU = 1
     PLAY = 3
+    VEHICLES = 4
+    SETTINGS = 5

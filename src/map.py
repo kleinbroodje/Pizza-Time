@@ -143,5 +143,13 @@ def generate_houses(road):
     return houses
 
 
-road = generate_road(10)
-houses = generate_houses(road)
+class Map:
+    def __init__(self):
+        self.road = generate_road(10)
+        self.houses = generate_houses(self.road)
+
+    def reset(self):
+        self.road = generate_road(10)
+        self.houses = generate_houses(self.road)
+
+map_ = Map()

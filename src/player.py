@@ -21,7 +21,22 @@ class Player:
         self.mountable = False
         self.pizza = None
         self.deliverable = False
-        self.target_house = choice(houses)
+        self.target_house = choice(map_.houses)
+        self.pizzas_delivered = 0
+        self.angle = 0
+
+    def reset(self):
+        self.rect.x, self.rect.y = 10, 10
+        self.vel_x = 0
+        self.vel_y = 0
+        self.running = False
+        self.current_frame = 0
+        self.vehicle = vehicles["bike"]
+        self.driving = False
+        self.mountable = False
+        self.pizza = None
+        self.deliverable = False
+        self.target_house = choice(map_.houses)
         self.pizzas_delivered = 0
         self.angle = 0
 
@@ -56,9 +71,10 @@ class Player:
             if event.key == pygame.K_e:
                 if self.deliverable:
                     pygame.mixer.Sound.play(point_sound)
+                    pygame.mixer.Sound.play(choice(voicelines))
                     self.pizza = None
                     self.pizzas_delivered += 1
-                    self.target_house = choice(houses)
+                    self.target_house = choice(map_.houses)
                 elif self.mountable:
                     if not self.pizza:
                         self.pizza = Pizza()
@@ -115,7 +131,7 @@ class Player:
 
             self.rect.x += self.vel_x
 
-            for o in houses:
+            for o in map_.houses:
                 if self.rect.colliderect(o.rect): 
                     if self.vel_x > 0:
                         self.rect.right = o.rect.left
@@ -124,7 +140,7 @@ class Player:
 
             self.rect.y += self.vel_y
 
-            for o in houses:
+            for o in map_.houses:
                 if self.rect.colliderect(o.rect): 
                     if self.vel_y > 0:
                         self.rect.bottom = o.rect.top

@@ -71,5 +71,4 @@ class Game:
         self.game_over = False
 
 
-
 game = Game()

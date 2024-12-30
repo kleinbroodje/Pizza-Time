@@ -6,6 +6,7 @@ from src.map import *
 from src.pizza import *
 from src.buttons import *
 
+
 def main():
     clock = pygame.time.Clock()
     running = True
@@ -37,10 +38,10 @@ def main():
                 scroll[0] = int(true_scroll[0])
                 scroll[1] = int(true_scroll[1])
                     
-                for tile in road:
+                for tile in map_.road:
                     tile.update()
 
-                for house in houses:
+                for house in map_.houses:
                     house.update()
                 
                 player.update(game.started)
@@ -50,9 +51,9 @@ def main():
                 minimap_scroll[0] += (player.rect.x*minimap_scale-minimap_scroll[0]-minimap_width/2+player.rect.width*minimap_scale/2)
                 minimap_scroll[1] += (player.rect.y*minimap_scale-minimap_scroll[1]-minimap_height/2+player.rect.height*minimap_scale/2)
                 minimap = pygame.surface.Surface((200, 200))
-                for r in road:
+                for r in map_.road:
                     minimap.blit(pygame.transform.scale_by(r.image, minimap_scale), pygame.Rect(r.position[0]*200*R*minimap_scale-minimap_scroll[0], r.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
-                for h in houses:
+                for h in map_.houses:
                     minimap.blit(pygame.transform.scale_by(h.image, minimap_scale), pygame.Rect(h.position[0]*200*R*minimap_scale-minimap_scroll[0], h.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
                 pygame.draw.rect(minimap, (255, 0, 255), pygame.Rect(player.target_house.position[0]*200*R*minimap_scale-minimap_scroll[0], player.target_house.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
                 if not player.driving:
@@ -61,15 +62,13 @@ def main():
                 display.blit(minimap, (1000, 20))
 
                 if not game.started and not game.ended:
-                    player.pizzas_delivered = 0
-
                     countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000)
                     countdown_timer = pygame.Font.render(fonts[50], f"{countdown}", True, (255, 255, 255))
                     display.blit(countdown_timer, (WIDTH/2 - countdown_timer.width/2, HEIGHT/2 - countdown_timer.height/2))
                     if countdown <= 0:
                         game.started = True
                         pygame.mixer.Sound.play(go_sound)
-                    elif prev_countdown != countdown:
+                    elif prev_countdown != countdown and countdown < 3:
                         pygame.mixer.Sound.play(click_sound)
                     prev_countdown = countdown
 
