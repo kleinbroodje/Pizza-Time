@@ -57,9 +57,19 @@ class Game:
         self.started = False
         self.ended = False
         self.duration = 60000
+        self.game_over = False
 
     def set_state(self, target):
+        self.reset()
         self.state = target
+
+    def reset(self):
+        self.countdown_time = 4000
+        self.started = False
+        self.ended = False
+        self.duration = 60000
+        self.game_over = False
+
 
 
 game = Game()

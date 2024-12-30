@@ -38,6 +38,6 @@ buttons = {
         Button((100, 255), 50, "SETTINGS", (255, 255, 255), lambda: game.set_state(States.PLAY)),
     ],
     States.PLAY: [
-        Button((100, 255), 50, "GO BACK TO MENU", (255, 255, 255), lambda: game.set_state(States.MAIN_MENU))
+        Button((WIDTH/2-160, 300), 30, "CLICK TO CONTINUE", (255, 255, 255), lambda: game.set_state(States.MAIN_MENU))
     ]
 }

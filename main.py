@@ -16,8 +16,9 @@ def main():
 
         for event in pygame.event.get():
             player.process_event(event)
-            for button in buttons[game.state]:
-                button.process_event(event)
+            if not (game.state == States.PLAY and not game.game_over):
+                for button in buttons[game.state]:
+                    button.process_event(event)
             if event.type == pygame.QUIT:
                 running = False
         
@@ -26,12 +27,10 @@ def main():
             case States.MAIN_MENU:
                 display.fill((0, 0, 0))
                 start_time = pygame.time.get_ticks()
-                for button in buttons[game.state]:
-                    button.update()
 
             case States.PLAY:
     
-                display.fill((0, 150, 8))
+                display.fill((84, 143, 43))
 
                 true_scroll[0] += (player.rect.x-true_scroll[0]-WIDTH/2+player.rect.width/2)/10
                 true_scroll[1] += (player.rect.y-true_scroll[1]-HEIGHT/2+player.rect.height/2)/10
@@ -52,14 +51,18 @@ def main():
                 minimap_scroll[1] += (player.rect.y*minimap_scale-minimap_scroll[1]-minimap_height/2+player.rect.height*minimap_scale/2)
                 minimap = pygame.surface.Surface((200, 200))
                 for r in road:
-                    pygame.draw.rect(minimap, (255, 255, 255), pygame.Rect(r.position[0]*200*R*minimap_scale-minimap_scroll[0], r.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
+                    minimap.blit(pygame.transform.scale_by(r.image, minimap_scale), pygame.Rect(r.position[0]*200*R*minimap_scale-minimap_scroll[0], r.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
+                for h in houses:
+                    minimap.blit(pygame.transform.scale_by(h.image, minimap_scale), pygame.Rect(h.position[0]*200*R*minimap_scale-minimap_scroll[0], h.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
                 pygame.draw.rect(minimap, (255, 0, 255), pygame.Rect(player.target_house.position[0]*200*R*minimap_scale-minimap_scroll[0], player.target_house.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
-                pygame.draw.rect(minimap, (0, 255, 0), pygame.Rect(player.vehicle.rect.x*minimap_scale-minimap_scroll[0], player.vehicle.rect.y*minimap_scale-minimap_scroll[1], player.vehicle.rect.width*minimap_scale, player.vehicle.rect.height*minimap_scale))
+                if not player.driving:
+                    pygame.draw.rect(minimap, (0, 255, 0), pygame.Rect(player.vehicle.rect.x*minimap_scale-minimap_scroll[0], player.vehicle.rect.y*minimap_scale-minimap_scroll[1], player.vehicle.rect.width*minimap_scale, player.vehicle.rect.height*minimap_scale))
                 pygame.draw.rect(minimap, (255, 0, 0), pygame.Rect(player.rect.x*minimap_scale-minimap_scroll[0], player.rect.y*minimap_scale-minimap_scroll[1], player.rect.width*minimap_scale, player.rect.height*minimap_scale))
                 display.blit(minimap, (1000, 20))
 
                 if not game.started and not game.ended:
                     player.pizzas_delivered = 0
+
                     countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000)
                     countdown_timer = pygame.Font.render(fonts[50], f"{countdown}", True, (255, 255, 255))
                     display.blit(countdown_timer, (WIDTH/2 - countdown_timer.width/2, HEIGHT/2 - countdown_timer.height/2))
@@ -76,6 +79,7 @@ def main():
                     stop_sign = pygame.Font.render(fonts[50], "STOP", True, (255, 255, 255))
                     if time < 0:
                         display.blit(score, (WIDTH/2 - score.width/2, HEIGHT/2 - score.height/2 - 100))
+                        game.game_over = True
                     else:
                         display.blit(stop_sign, (WIDTH/2 - stop_sign.width/2, HEIGHT/2 - stop_sign.height/2))
 
@@ -96,6 +100,10 @@ def main():
                         pygame.mixer.Sound.play(countdown_sound)
                     prev_time = time
         
+        if not (game.state == States.PLAY and not game.game_over):
+            for button in buttons[game.state]:
+                button.update()
+
         fps = pygame.Font.render(fonts[30], f"{int(clock.get_fps())}", True, (255, 255, 255))
         display.blit(fps, (0, 0))
 
