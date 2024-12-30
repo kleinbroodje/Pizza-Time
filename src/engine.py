@@ -48,3 +48,18 @@ def imgload(*path, columns=1, rows=1, scale=R):
                 )
                 ret.append(frame)
     return ret
+
+
+class Game:
+    def __init__(self):
+        self.state = States.MAIN_MENU
+        self.countdown_time = 4000
+        self.started = False
+        self.ended = False
+        self.duration = 60000
+
+    def set_state(self, target):
+        self.state = target
+
+
+game = Game()
