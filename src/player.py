@@ -74,6 +74,9 @@ class Player:
                     pygame.mixer.Sound.play(choice(voicelines))
                     self.pizza = None
                     self.pizzas_delivered += 1
+                    new_house = choice(map_.houses)
+                    while new_house != self.target_house:
+                        new_house = choice(map_.houses)
                     self.target_house = choice(map_.houses)
                 elif self.mountable:
                     if not self.pizza:

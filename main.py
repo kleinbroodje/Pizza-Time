@@ -12,6 +12,8 @@ def main():
     running = True
     prev_countdown = 3
     prev_time = 0
+
+    pygame.mixer.Sound.play(theme_song, -1)
     while running:
         clock.tick(60)
 
@@ -55,7 +57,7 @@ def main():
                     minimap.blit(pygame.transform.scale_by(r.image, minimap_scale), pygame.Rect(r.position[0]*200*R*minimap_scale-minimap_scroll[0], r.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
                 for h in map_.houses:
                     minimap.blit(pygame.transform.scale_by(h.image, minimap_scale), pygame.Rect(h.position[0]*200*R*minimap_scale-minimap_scroll[0], h.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
-                pygame.draw.rect(minimap, (255, 0, 255), pygame.Rect(player.target_house.position[0]*200*R*minimap_scale-minimap_scroll[0], player.target_house.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale))
+                pygame.draw.rect(minimap, (251, 242, 54), pygame.Rect(player.target_house.position[0]*200*R*minimap_scale-minimap_scroll[0], player.target_house.position[1]*200*R*minimap_scale-minimap_scroll[1], 200*R*minimap_scale, 200*R*minimap_scale), 2)
                 if not player.driving:
                     pygame.draw.rect(minimap, (0, 255, 0), pygame.Rect(player.vehicle.rect.x*minimap_scale-minimap_scroll[0], player.vehicle.rect.y*minimap_scale-minimap_scroll[1], player.vehicle.rect.width*minimap_scale, player.vehicle.rect.height*minimap_scale))
                 pygame.draw.rect(minimap, (255, 0, 0), pygame.Rect(player.rect.x*minimap_scale-minimap_scroll[0], player.rect.y*minimap_scale-minimap_scroll[1], player.rect.width*minimap_scale, player.rect.height*minimap_scale))
