@@ -3,7 +3,8 @@ from src.map import *
 
 
 class Vehicle:
-    def __init__(self, name, speed, r_max_vel, max_vel, rot_vel):
+    def __init__(self, name, speed, r_max_vel, max_vel, rot_vel, offset):
+        self.name = name
         self.image = imgload("assets", "images", f"{name}.png")
         self.rect = pygame.Rect(0, 0, 48*R, 48*R)
         self.base_speed = speed
@@ -14,6 +15,7 @@ class Vehicle:
         self.r_max_vel = r_max_vel
         self.rot_vel = rot_vel
         self.angle  = 0
+        self.offset = offset
 
     def reset(self):
         self.rect.x, self.rect.y = 0, 0
@@ -60,10 +62,10 @@ class Vehicle:
                 if self.vel_y < 0:
                     self.rect.top = o.rect.bottom
 
-        self.vel = max(0, self.vel - 0.1)
+        self.vel = max(0, self.vel - 0.5)
 
         img_copy = pygame.transform.rotate(self.image, self.angle)
-        display.blit(img_copy, (self.rect.centerx - int(img_copy.width/2) - scroll[0], self.rect.centery - int(img_copy.height/2) - scroll[1]))
+        display.blit(img_copy, (self.rect.centerx - int(img_copy.get_width()/2) - scroll[0], self.rect.centery - int(img_copy.get_height()/2) - scroll[1]))
 
 
-vehicles = {"bike": Vehicle("bike", 2, 0, 10, 3)}
+vehicles = {"bike": Vehicle("bike", 2, -4, 15, 3, 4), "scooter": Vehicle("scooter", 4, -2, 17, 4, -3)}

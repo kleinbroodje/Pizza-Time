@@ -1,3 +1,5 @@
+import asyncio #pygbag
+
 from src.settings import *
 from src.engine import *
 from src.player import *
@@ -7,7 +9,7 @@ from src.pizza import *
 from src.buttons import *
 
 
-def main():
+async def main():
     clock = pygame.time.Clock()
     running = True
     prev_countdown = 3
@@ -16,12 +18,12 @@ def main():
     pygame.mixer.Sound.play(theme_song, -1)
     while running:
         clock.tick(60)
-
         for event in pygame.event.get():
             player.process_event(event)
             if not (game.state == States.PLAY and not game.game_over):
                 for button in buttons[game.state]:
-                    button.process_event(event)
+                    if not(button == vehicle_select.select_button and player.vehicle == vehicle_select.item):
+                        button.process_event(event)
             if event.type == pygame.QUIT:
                 running = False
         
@@ -66,7 +68,7 @@ def main():
                 if not game.started and not game.ended:
                     countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000)
                     countdown_timer = pygame.Font.render(fonts[50], f"{countdown}", True, (255, 255, 255))
-                    display.blit(countdown_timer, (WIDTH/2 - countdown_timer.width/2, HEIGHT/2 - countdown_timer.height/2))
+                    display.blit(countdown_timer, (WIDTH/2 - countdown_timer.get_width()/2, HEIGHT/2 - countdown_timer.get_height()/2))
                     if countdown <= 0:
                         game.started = True
                         pygame.mixer.Sound.play(go_sound)
@@ -79,18 +81,18 @@ def main():
                     score = pygame.Font.render(fonts[50], f"SCORE: {player.pizzas_delivered}", True, (255, 255, 255))
                     stop_sign = pygame.Font.render(fonts[50], "STOP", True, (255, 255, 255))
                     if time < 0:
-                        display.blit(score, (WIDTH/2 - score.width/2, HEIGHT/2 - score.height/2 - 100))
+                        display.blit(score, (WIDTH/2 - score.get_width()/2, HEIGHT/2 - score.get_height()/2 - 100))
                         game.game_over = True
                     else:
-                        display.blit(stop_sign, (WIDTH/2 - stop_sign.width/2, HEIGHT/2 - stop_sign.height/2))
+                        display.blit(stop_sign, (WIDTH/2 - stop_sign.get_width()/2, HEIGHT/2 - stop_sign.get_height()/2))
 
                 if game.started:
                     time = int((game.duration-pygame.time.get_ticks()+start_time+game.countdown_time)/1000)
                     timer = pygame.Font.render(fonts[30], f"{time}", True, (255, 255, 255))
-                    display.blit(timer, (WIDTH/2 - timer.width/2, 0))
+                    display.blit(timer, (WIDTH/2 - timer.get_width()/2, 0))
                     if time > game.duration/1000-1:
                         start_sign = pygame.Font.render(fonts[50], f"GO", True, (255, 255, 255))
-                        display.blit(start_sign, (WIDTH/2 - start_sign.width/2, HEIGHT/2 - start_sign.height/2))
+                        display.blit(start_sign, (WIDTH/2 - start_sign.get_width()/2, HEIGHT/2 - start_sign.get_height()/2))
 
                     if time <= 0:
                         start_time = pygame.time.get_ticks()
@@ -99,10 +101,22 @@ def main():
                         game.ended = True
                     elif prev_time != time and time < 4:
                         pygame.mixer.Sound.play(countdown_sound)
+
                     prev_time = time
+
+            case States.VEHICLES:
+                display.fill((0, 0, 0))
+                vehicle_select.update()
+
+            case States.SETTINGS:
+                display.fill((0, 0, 0))
         
         if not (game.state == States.PLAY and not game.game_over):
             for button in buttons[game.state]:
+                if button == vehicle_select.select_button and player.vehicle == vehicle_select.item:
+                    text = pygame.Font.render(fonts[50], "SELECTED", True, (255, 255, 255))
+                    display.blit(text, (WIDTH/2 - 115, 450))
+                    continue
                 button.update()
 
         fps = pygame.Font.render(fonts[30], f"{int(clock.get_fps())}", True, (255, 255, 255))
@@ -111,7 +125,9 @@ def main():
         window.blit(display, (0, 0))
 
         pygame.display.update()
+        
+        await asyncio.sleep(0) #pygbag
 
     pygame.quit()
 
-main()
+asyncio.run(main()) #pygbag

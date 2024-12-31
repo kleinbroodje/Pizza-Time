@@ -22,7 +22,7 @@ hover_sound = pygame.mixer.Sound(Path("assets", "sfx", "select.wav"))
 go_sound = pygame.mixer.Sound(Path("assets", "sfx", "go.wav"))
 countdown_sound = pygame.mixer.Sound(Path("assets", "sfx", "count.wav"))
 stop_sound = pygame.mixer.Sound(Path("assets", "sfx", "stop.wav"))
-theme_song = pygame.mixer.Sound(Path("assets", "sfx", "theme1.mp3"))
+theme_song = pygame.mixer.Sound(Path("assets", "sfx", "theme1.wav"))
 theme_song.set_volume(0.8)
 
 voicelines = [pygame.mixer.Sound(Path("assets", "sfx", f"voiceline{i}.wav")) for i in range(1, 9)]
