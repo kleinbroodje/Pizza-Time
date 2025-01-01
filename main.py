@@ -48,7 +48,10 @@ async def main():
 
                 for house in map_.houses:
                     house.update()
-                
+
+                for obstacle in map_.obstacles:
+                    obstacle.update()
+
                 player.update(game.started)
                 
                 minimap_width, minimap_height = 200, 200

@@ -64,6 +64,16 @@ class House:
         display.blit(self.image, (self.image_rect.x - scroll[0], self.image_rect.y - scroll[1]))
 
 
+class Puddle():
+    def __init__(self, pos) -> None:
+        self.pos = pos
+        self.image = imgload("assets", "images", "puddle.png")
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self):
+        display.blit(self.image, (self.pos[0]-scroll[0], self.pos[1]-scroll[1]))
+
+
 def generate_road(num_tiles):
     start = Tile((0, 0))
     road = [start]
@@ -143,13 +153,22 @@ def generate_houses(road):
     return houses
 
 
+def generate_obstacles(road):
+    obstacles = []
+    for r in road:
+        obstacles.append(Puddle((randint(r.rect.left, r.rect.right-35*R), randint(r.rect.top, r.rect.bottom-32*R))))
+    return obstacles
+
+
 class Map:
     def __init__(self):
         self.road = generate_road(10)
         self.houses = generate_houses(self.road)
+        self.obstacles = generate_obstacles(self.road)
 
     def reset(self):
         self.road = generate_road(10)
         self.houses = generate_houses(self.road)
+        self.obstacles = generate_obstacles(self.road)
 
 map_ = Map()

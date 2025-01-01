@@ -57,7 +57,7 @@ class Select():
         self.right_arrow = Button(rpos, arrow_size, ">", (255, 255, 255), [lambda: self.right()])
         self.left_arrow = Button(lpos, arrow_size, "<", (255, 255, 255), [lambda: self.left()])
         self.select_button = Button((WIDTH/2 - 85, 450), 50, "SELECT", (255, 255, 255), [lambda: player.switch_vehicle(self.items[self.index].name)])
-        self.scooter_buy = Button((WIDTH/2 - 60, 450), 50, "300$", (255, 255, 255), [lambda: buy_vehicle(300, vehicles["scooter"])])
+        self.scooter_buy = Button((WIDTH/2 - 60, 450), 50, "250$", (255, 255, 255), [lambda: buy_vehicle(250, vehicles["scooter"])])
         self.items = items
         self.index = 0
         self.item = self.items[self.index]
