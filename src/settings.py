@@ -1,6 +1,6 @@
 import pygame
 import math
-from random import choice
+from random import choice, randint
 from pathlib import Path
 from enum import Enum
 

@@ -22,7 +22,8 @@ async def main():
             player.process_event(event)
             if not (game.state == States.PLAY and not game.game_over):
                 for button in buttons[game.state]:
-                    if not(button == vehicle_select.select_button and player.vehicle == vehicle_select.item):
+                    if (not(button == vehicle_select.select_button and (player.vehicle == vehicle_select.item or vehicle_select.item not in player.unlocked_vehicles)) and 
+                        not(button == vehicle_select.scooter_buy and (vehicles["scooter"] in player.unlocked_vehicles or vehicle_select.item != vehicles["scooter"]))):
                         button.process_event(event)
             if event.type == pygame.QUIT:
                 running = False
@@ -64,6 +65,9 @@ async def main():
                     pygame.draw.rect(minimap, (0, 255, 0), pygame.Rect(player.vehicle.rect.x*minimap_scale-minimap_scroll[0], player.vehicle.rect.y*minimap_scale-minimap_scroll[1], player.vehicle.rect.width*minimap_scale, player.vehicle.rect.height*minimap_scale))
                 pygame.draw.rect(minimap, (255, 0, 0), pygame.Rect(player.rect.x*minimap_scale-minimap_scroll[0], player.rect.y*minimap_scale-minimap_scroll[1], player.rect.width*minimap_scale, player.rect.height*minimap_scale))
                 display.blit(minimap, (1000, 20))
+
+                tips = pygame.Font.render(fonts[30], f"tips: {player.tips}$", True, (255, 255, 255))
+                display.blit(tips, (1040, 225))
 
                 if not game.started and not game.ended:
                     countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000)
@@ -113,11 +117,21 @@ async def main():
         
         if not (game.state == States.PLAY and not game.game_over):
             for button in buttons[game.state]:
-                if button == vehicle_select.select_button and player.vehicle == vehicle_select.item:
-                    text = pygame.Font.render(fonts[50], "SELECTED", True, (255, 255, 255))
-                    display.blit(text, (WIDTH/2 - 115, 450))
-                    continue
+                if button == vehicle_select.scooter_buy:
+                    if vehicle_select.item != vehicles["scooter"] or vehicles["scooter"] in player.unlocked_vehicles:
+                        continue
+                if button == vehicle_select.select_button: 
+                    if player.vehicle == vehicle_select.item:
+                        text = pygame.Font.render(fonts[50], "SELECTED", True, (255, 255, 255))
+                        display.blit(text, (WIDTH/2 - 115, 450))
+                        continue
+                    if vehicle_select.item not in player.unlocked_vehicles:
+                        continue
                 button.update()
+
+        if game.state != States.PLAY:
+            tips = pygame.Font.render(fonts[30], f"tips collected: {player.total_tips}$", True, (255, 255, 255))
+            display.blit(tips, (WIDTH/2 - tips.get_width()/2, 0))
 
         fps = pygame.Font.render(fonts[30], f"{int(clock.get_fps())}", True, (255, 255, 255))
         display.blit(fps, (0, 0))

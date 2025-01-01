@@ -2,6 +2,13 @@ from src.engine import *
 from src.player import *
 
 
+def buy_vehicle(price, vehicle): 
+    if player.total_tips < price:
+        return
+    player.total_tips -= price
+    player.unlocked_vehicles.append(vehicle)
+
+
 class Button:
     def __init__(self, pos, size, text, color, funcs):
         self.size = size
@@ -40,6 +47,7 @@ class Select():
         self.right_arrow = Button(rpos, arrow_size, ">", (255, 255, 255), [lambda: self.right()])
         self.left_arrow = Button(lpos, arrow_size, "<", (255, 255, 255), [lambda: self.left()])
         self.select_button = Button((WIDTH/2 - 85, 450), 50, "SELECT", (255, 255, 255), [lambda: player.switch_vehicle(self.items[self.index].name)])
+        self.scooter_buy = Button((WIDTH/2 - 60, 450), 50, "500$", (255, 255, 255), [lambda: buy_vehicle(500, vehicles["scooter"])])
         self.items = items
         self.index = 0
         self.item = self.items[self.index]
@@ -79,6 +87,7 @@ buttons = {
         vehicle_select.select_button,
         vehicle_select.right_arrow,
         vehicle_select.left_arrow,
+        vehicle_select.scooter_buy,
     ],
     States.SETTINGS: [
         Button((100, 100), 40, "BACK", (255, 255, 255), [lambda: game.set_state(States.MAIN_MENU)])

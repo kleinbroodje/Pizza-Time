@@ -16,6 +16,7 @@ class Player:
         self.speed = 7
         self.running = False
         self.current_frame = 0
+        self.unlocked_vehicles = [vehicles["bike"]]
         self.vehicle = vehicles["bike"]
         self.driving = False
         self.mountable = False
@@ -24,11 +25,14 @@ class Player:
         self.target_house = choice(map_.houses)
         self.pizzas_delivered = 0
         self.angle = 0
+        self.total_tips = 0
+        self.tips = 0
 
     def switch_vehicle(self, vehicle):
         self.vehicle = vehicles[vehicle]
 
     def reset(self):
+        self.tips = 0
         self.rect.x, self.rect.y = 10, 10
         self.vel_x = 0
         self.vel_y = 0
@@ -81,6 +85,10 @@ class Player:
                     while new_house == self.target_house:
                         new_house = choice(map_.houses)
                     self.target_house = new_house
+
+                    tip = randint(5, 10)
+                    self.tips += tip
+                    self.total_tips += tip
                     
                 elif self.mountable:
                     if not self.pizza:
