@@ -27,6 +27,12 @@ class Player:
         self.angle = 0
         self.total_tips = 0
         self.tips = 0
+        self.tip_timer = 1
+        self.tip = 0
+        self.tip_x = 0
+        self.tip_y = 0
+        self.tip_max_y = 0
+        self.tipped = False
 
     def switch_vehicle(self, vehicle):
         self.vehicle = vehicles[vehicle]
@@ -86,9 +92,13 @@ class Player:
                         new_house = choice(map_.houses)
                     self.target_house = new_house
 
-                    tip = randint(5, 10)
-                    self.tips += tip
-                    self.total_tips += tip
+                    self.tip = randint(5, 10)
+                    self.tips += self.tip
+                    self.total_tips += self.tip
+                    self.tipped = True
+                    self.tip_x = self.rect.centerx + randint(-20, 20)
+                    self.tip_y = self.rect.centery + randint(-20, 20)
+                    self.tip_max_y = self.tip_y - 60
                     
                 elif self.mountable:
                     if not self.pizza:
@@ -178,5 +188,15 @@ class Player:
                 self.angle = math.degrees(math.atan2(self.rect.centery - (pygame.mouse.get_pos()[1]+scroll[1]), self.rect.centerx - (pygame.mouse.get_pos()[0]+scroll[0]))) * -1 - 90
         
         self.draw()
+
+        if self.tipped:
+            tip = pygame.Font.render(fonts[40], f"+{self.tip}$", True, (255, 255, 255))
+            self.tip_y -= math.sqrt(self.tip_timer)
+            self.tip_timer += 1
+            if self.tip_y <= self.tip_max_y:
+                self.tipped = False
+                self.tip_timer = 1
+            display.blit(tip, (self.tip_x-scroll[0], self.tip_y-scroll[1]))
+            
 
 player = Player()
