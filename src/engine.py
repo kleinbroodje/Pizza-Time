@@ -58,6 +58,8 @@ class Game:
         self.ended = False
         self.duration = 60000
         self.game_over = False
+        self.upgrades = []
+        self.upgrade_types = ["speed", "time"]
 
     def set_state(self, target):
         self.reset()
@@ -69,6 +71,6 @@ class Game:
         self.ended = False
         self.duration = 60000
         self.game_over = False
-
+        self.upgrades = []
 
 game = Game()

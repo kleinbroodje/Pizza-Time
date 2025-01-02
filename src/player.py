@@ -178,7 +178,7 @@ class Player:
                     if self.vel_y < 0:
                         self.rect.top = o.rect.bottom
 
-            for u in upgrades:
+            for u in game.upgrades:
                 if self.rect.colliderect(u.rect): 
                     pygame.mixer.Sound.play(upgrade_sound)
                     self.upgrades.append(u)
@@ -187,7 +187,7 @@ class Player:
                     upgrade_max_y = self.rect.centery + randint(-20, 20)
                     self.upgrades_pos.append([self.rect.centerx + randint(-20, 20), upgrade_max_y])
                     self.upgrades_max_y.append(upgrade_max_y - 60)
-                    upgrades.remove(u)
+                    game.upgrades.remove(u)
             
             self.deliverable = False
             if self.rect.colliderect(self.target_house.door_rect) and self.pizza:
@@ -246,5 +246,3 @@ class Upgrade():
 
 
 player = Player()
-upgrades = []
-upgrade_types = ["speed", "time"]

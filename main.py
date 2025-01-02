@@ -60,7 +60,7 @@ async def main():
                 for house in map_.houses:
                     house.update()
                 
-                for upgrade in upgrades:
+                for upgrade in game.upgrades:
                     upgrade.update() 
 
                 for upgrade in player.upgrades:
@@ -109,7 +109,6 @@ async def main():
 
                 if not game.started and game.ended:
                     extra_time = 0
-                    upgrades = []
                     time = 1000-pygame.time.get_ticks()+start_time
                     score = pygame.Font.render(fonts[50], f"SCORE: {player.pizzas_delivered}", True, (255, 255, 255))
                     stop_sign = pygame.Font.render(fonts[50], "STOP", True, (255, 255, 255))
@@ -130,7 +129,7 @@ async def main():
     
                     if pygame.time.get_ticks() - last_upgrade > upgrade_cooldown:
                         road = choice(map_.road)
-                        upgrades.append(Upgrade(choice(upgrade_types), (randint(road.rect.left, road.rect.right-30*R), randint(road.rect.top, road.rect.bottom-30*R))))
+                        game.upgrades.append(Upgrade(choice(game.pgrade_types), (randint(road.rect.left, road.rect.right-30*R), randint(road.rect.top, road.rect.bottom-30*R))))
                         last_upgrade = pygame.time.get_ticks()
 
 
