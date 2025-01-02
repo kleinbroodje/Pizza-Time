@@ -109,6 +109,7 @@ async def main():
 
                 if not game.started and game.ended:
                     extra_time = 0
+                    upgrades = []
                     time = 1000-pygame.time.get_ticks()+start_time
                     score = pygame.Font.render(fonts[50], f"SCORE: {player.pizzas_delivered}", True, (255, 255, 255))
                     stop_sign = pygame.Font.render(fonts[50], "STOP", True, (255, 255, 255))

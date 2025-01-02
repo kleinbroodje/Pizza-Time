@@ -44,6 +44,7 @@ class Player:
 
     def reset(self):
         self.tips = 0
+        self.upgrades = []
         self.rect.x, self.rect.y = 10, 10
         self.vel_x = 0
         self.vel_y = 0
