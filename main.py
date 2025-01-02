@@ -15,6 +15,14 @@ async def main():
     prev_countdown = 3
     prev_time = 0
 
+    speed_upgrade_time = 10000
+    speed_timer = 0
+
+    upgrade_cooldown = 10000
+    last_upgrade = 0
+
+    extra_time = 0
+
     pygame.mixer.Sound.play(theme_song, -1)
     while running:
         clock.tick(60)
@@ -45,12 +53,28 @@ async def main():
                     
                 for tile in map_.road:
                     tile.update()
+                
+                for obstacle in map_.obstacles:
+                    obstacle.update()   
 
                 for house in map_.houses:
                     house.update()
+                
+                for upgrade in upgrades:
+                    upgrade.update() 
 
-                for obstacle in map_.obstacles:
-                    obstacle.update()
+                for upgrade in player.upgrades:
+                    match upgrade.type:
+                        case "speed":
+                            player.vehicle.max_vel *= 1.2
+                            speed_timer = pygame.time.get_ticks()
+
+                        case "time":
+                            extra_time += 5
+                    player.upgrades.remove(upgrade)
+
+                if pygame.time.get_ticks() - speed_timer > speed_upgrade_time:
+                    player.vehicle.max_vel = player.vehicle.base_max_vel
 
                 player.update(game.started)
                 
@@ -73,7 +97,7 @@ async def main():
                 display.blit(tips, (1040, 225))
 
                 if not game.started and not game.ended:
-                    countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000)
+                    countdown = int((game.countdown_time-pygame.time.get_ticks()+start_time)/1000) + extra_time
                     countdown_timer = pygame.Font.render(fonts[50], f"{countdown}", True, (255, 255, 255))
                     display.blit(countdown_timer, (WIDTH/2 - countdown_timer.get_width()/2, HEIGHT/2 - countdown_timer.get_height()/2))
                     if countdown <= 0:
@@ -84,6 +108,7 @@ async def main():
                     prev_countdown = countdown
 
                 if not game.started and game.ended:
+                    extra_time = 0
                     time = 1000-pygame.time.get_ticks()+start_time
                     score = pygame.Font.render(fonts[50], f"SCORE: {player.pizzas_delivered}", True, (255, 255, 255))
                     stop_sign = pygame.Font.render(fonts[50], "STOP", True, (255, 255, 255))
@@ -94,12 +119,19 @@ async def main():
                         display.blit(stop_sign, (WIDTH/2 - stop_sign.get_width()/2, HEIGHT/2 - stop_sign.get_height()/2))
 
                 if game.started:
-                    time = int((game.duration-pygame.time.get_ticks()+start_time+game.countdown_time)/1000)
+                    time = int((game.duration-pygame.time.get_ticks()+start_time+game.countdown_time)/1000) + extra_time
                     timer = pygame.Font.render(fonts[30], f"{time}", True, (255, 255, 255))
                     display.blit(timer, (WIDTH/2 - timer.get_width()/2, 0))
-                    if time > game.duration/1000-1:
+                    if time-extra_time > game.duration/1000-1:
                         start_sign = pygame.Font.render(fonts[50], f"GO", True, (255, 255, 255))
                         display.blit(start_sign, (WIDTH/2 - start_sign.get_width()/2, HEIGHT/2 - start_sign.get_height()/2))
+
+    
+                    if pygame.time.get_ticks() - last_upgrade > upgrade_cooldown:
+                        road = choice(map_.road)
+                        upgrades.append(Upgrade(choice(upgrade_types), (randint(road.rect.left, road.rect.right-30*R), randint(road.rect.top, road.rect.bottom-30*R))))
+                        last_upgrade = pygame.time.get_ticks()
+
 
                     if time <= 0:
                         start_time = pygame.time.get_ticks()

@@ -33,6 +33,11 @@ class Player:
         self.tip_y = 0
         self.tip_max_y = 0
         self.tipped = False
+        self.upgrades = []
+        self.animate_upgrades = []
+        self.animate_upgrades_timers = []
+        self.upgrades_max_y = []
+        self.upgrades_pos = []
 
     def switch_vehicle(self, vehicle):
         self.vehicle = vehicles[vehicle]
@@ -161,7 +166,7 @@ class Player:
                     if self.vel_x > 0:
                         self.rect.right = o.rect.left
                     if self.vel_x < 0:
-                        self.rect.left = o.rect.right
+                        self.rect.left = o.rect.right            
 
             self.rect.y += self.vel_y
 
@@ -171,6 +176,17 @@ class Player:
                         self.rect.bottom = o.rect.top
                     if self.vel_y < 0:
                         self.rect.top = o.rect.bottom
+
+            for u in upgrades:
+                if self.rect.colliderect(u.rect): 
+                    pygame.mixer.Sound.play(upgrade_sound)
+                    self.upgrades.append(u)
+                    self.animate_upgrades.append(u)
+                    self.animate_upgrades_timers.append(0)
+                    upgrade_max_y = self.rect.centery + randint(-20, 20)
+                    self.upgrades_pos.append([self.rect.centerx + randint(-20, 20), upgrade_max_y])
+                    self.upgrades_max_y.append(upgrade_max_y - 60)
+                    upgrades.remove(u)
             
             self.deliverable = False
             if self.rect.colliderect(self.target_house.door_rect) and self.pizza:
@@ -189,6 +205,23 @@ class Player:
         
         self.draw()
 
+        for upgrade in self.animate_upgrades:
+            if upgrade.type == "speed":
+                text = pygame.Font.render(fonts[40], f"x1.2 speed", True, (255, 255, 255))
+            elif upgrade.type == "time":
+                text = pygame.Font.render(fonts[40], f"+5s time", True, (255, 255, 255))
+
+            upgrade_index = self.animate_upgrades.index(upgrade)
+            self.upgrades_pos[upgrade_index][1] -= math.sqrt(self.animate_upgrades_timers[upgrade_index])
+            self.animate_upgrades_timers[upgrade_index] += 0.5
+            display.blit(text, (self.upgrades_pos[upgrade_index][0]-scroll[0], self.upgrades_pos[upgrade_index][1]-scroll[1]))
+            if self.upgrades_pos[upgrade_index][1] <= self.upgrades_max_y[upgrade_index]:
+                del self.animate_upgrades[upgrade_index]
+                del self.animate_upgrades_timers[upgrade_index]
+                del self.upgrades_max_y[upgrade_index]
+                del self.upgrades_pos[upgrade_index]
+
+
         if self.tipped:
             tip = pygame.Font.render(fonts[40], f"+{self.tip}$", True, (255, 255, 255))
             self.tip_y -= math.sqrt(self.tip_timer)
@@ -197,6 +230,20 @@ class Player:
                 self.tipped = False
                 self.tip_timer = 1
             display.blit(tip, (self.tip_x-scroll[0], self.tip_y-scroll[1]))
-            
+
+
+class Upgrade():
+    def __init__(self, name, pos):
+        self.type = name
+        self.image = imgload("assets", "images", f"{name}_token.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+
+    def update(self):
+        display.blit(self.image, (self.rect.x-scroll[0], self.rect.y-scroll[1]))
+
 
 player = Player()
+upgrades = []
+upgrade_types = ["speed", "time"]

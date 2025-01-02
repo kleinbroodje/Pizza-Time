@@ -17,7 +17,7 @@ class Vehicle:
         self.rot_vel = rot_vel
         self.angle  = 0
         self.offset = offset
-        self.slipping_time = 700 
+        self.slipping_time = 750
         self.start_slipping = 0
         self.slipping = False
         self.slipping_angle = 0
@@ -50,7 +50,7 @@ class Vehicle:
     def update(self):
         if self.slipping:
             angle = self.slipping_angle
-            self.angle += 17
+            self.angle += 16
             if pygame.time.get_ticks() - self.start_slipping > self.slipping_time:
                 self.slipping = False
         else:

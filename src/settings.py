@@ -23,6 +23,7 @@ go_sound = pygame.mixer.Sound(Path("assets", "sfx", "go.wav"))
 countdown_sound = pygame.mixer.Sound(Path("assets", "sfx", "count.wav"))
 stop_sound = pygame.mixer.Sound(Path("assets", "sfx", "stop.wav"))
 slip_sound = pygame.mixer.Sound(Path("assets", "sfx", "slip.wav"))
+upgrade_sound = pygame.mixer.Sound(Path("assets", "sfx", "upgrade.wav"))
 theme_song = pygame.mixer.Sound(Path("assets", "sfx", "theme1.wav"))
 theme_song.set_volume(0.8)
 
