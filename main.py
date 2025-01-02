@@ -129,7 +129,7 @@ async def main():
     
                     if pygame.time.get_ticks() - last_upgrade > upgrade_cooldown:
                         road = choice(map_.road)
-                        game.upgrades.append(Upgrade(choice(game.pgrade_types), (randint(road.rect.left, road.rect.right-30*R), randint(road.rect.top, road.rect.bottom-30*R))))
+                        game.upgrades.append(Upgrade(choice(game.upgrade_types), (randint(road.rect.left, road.rect.right-30*R), randint(road.rect.top, road.rect.bottom-30*R))))
                         last_upgrade = pygame.time.get_ticks()
 
 
